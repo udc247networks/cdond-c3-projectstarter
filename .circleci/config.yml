@@ -38,17 +38,20 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      # - restore_cache:
-      #     keys: [frontend-build]
+      - restore_cache:
+          keys:
+            - front-end-{{ checksum "frontend/package.json" }}
       - run:
-          name: Build front-end
+          name: front end build
           command: |
             cd frontend
             npm i
             npm run build
+          
       - save_cache:
-          paths: [frontend/node_modules]
-          key: frontend-build
+          paths:
+            - frontend/node_modules
+          key: front-end-{{ checksum "frontend/package.json" }}
 
   # build-backend:
   #   docker:
