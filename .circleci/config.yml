@@ -84,7 +84,10 @@ jobs:
                 - ./node_modules
           - run:
               name: test
-              command: npm run test
+              command: |
+                cd frontend
+                npm i
+                npm run test 
 
                 
   # test-backend:
