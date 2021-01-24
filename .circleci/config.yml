@@ -31,7 +31,7 @@ version: 2.1
 #             #  Add revert code here. You can find this in the Getting Started section.
 #               exit 1
 #             fi
-            
+#                                                                                                   https://circleci.com/docs/2.0/caching/           
 jobs:
   build-frontend:
     docker:
@@ -50,6 +50,8 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build-{{ checksum "package-lock.json" }}
+
+
 
   # build-backend:
   #   docker:
@@ -275,7 +277,7 @@ workflows:
   default:
     jobs:
       - build-frontend
-      - build-backend
+      # - build-backend
       # - test-frontend:
       #     requires: [build-frontend]
       # - test-backend:
