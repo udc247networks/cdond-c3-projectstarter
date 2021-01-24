@@ -39,19 +39,17 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys:
-            - front-end-{{ checksum "frontend/package.json" }}
+          keys: 
+          - frontend-build-{{ checksum "package-lock.json" }}
       - run:
-          name: front end build
+          name: Build front-end
           command: |
             cd frontend
             npm i
             npm run build
-          
       - save_cache:
-          paths:
-            - frontend/node_modules
-          key: front-end-{{ checksum "frontend/package.json" }}
+          paths: [frontend/node_modules]
+          key: frontend-build-{{ checksum "package-lock.json" }}
 
   # build-backend:
   #   docker:
@@ -277,7 +275,7 @@ workflows:
   default:
     jobs:
       - build-frontend
-      # - build-backend
+      - build-backend
       # - test-frontend:
       #     requires: [build-frontend]
       # - test-backend:
