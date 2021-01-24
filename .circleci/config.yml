@@ -109,21 +109,41 @@ jobs:
                 npm i
                 npm test
             
-#   scan-frontend:
-#     docker:
-#       # Docker image here
-#     steps:
-#       # Checkout code from git
-#       # Restore from cache
-#       # Your job code here
+  scan-frontend:
+    docker:
+        - image: circleci/node:13.8.0
+    steps:
+          - checkout
+          - restore_cache:
+              key: dependency-cache-{{ checksum "package-lock.json" }}
+          - save_cache:
+              key: dependency-cache-{{ checksum "package-lock.json" }}
+              paths:
+                - ./node_modules
+          - run:
+              name: audit
+              command: |
+                cd frontend
+                npm i
+                npm audit --audit-level=critical
 
-#   scan-backend:
-#     docker:
-#       # Docker image here
-#     steps:
-#       # Checkout code from git
-#       # Restore from cache
-#       # Your job code here
+  scan-backend:
+    docker:
+        - image: circleci/node:13.8.0
+    steps:
+          - checkout
+          - restore_cache:
+              key: dependency-cache-{{ checksum "package-lock.json" }}
+          - save_cache:
+              key: dependency-cache-{{ checksum "package-lock.json" }}
+              paths:
+                - ./node_modules
+          - run:
+              name: audit
+              command: |
+                cd frontend
+                npm i
+                npm audit --audit-level=critical
 
 #   deploy-infrastructure:
 #     docker:
@@ -300,10 +320,10 @@ workflows:
           requires: [build-frontend]
       - test-backend:
           requires: [build-backend]
-      # - scan-backend:
-      #     requires: [build-backend]
-      # - scan-frontend:
-      #     requires: [build-frontend]
+      - scan-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
       # - deploy-infrastructure:
       #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       #     filters:
