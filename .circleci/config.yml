@@ -33,6 +33,9 @@ version: 2.1
 #             fi
 #                                                                                                   https://circleci.com/docs/2.0/caching/           
 jobs:
+
+# building front and backend##########################################################################
+
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -71,6 +74,9 @@ jobs:
           paths: [backend/node_modules]
           key: backend-build-{{ checksum "package-lock.json" }}
 
+
+# testing front and backend#####################################################################################
+
   test-frontend:
     docker:
         - image: circleci/node:13.8.0
@@ -108,6 +114,10 @@ jobs:
                 npm i
                 npm test
             
+
+
+# scanning front and backend##################################################################################
+
   scan-frontend:
     docker:
         - image: circleci/node:13.8.0
@@ -144,39 +154,41 @@ jobs:
                 npm i
                 npm audit fix --audit-level=critical --force
 
-#   deploy-infrastructure:
-#     docker:
-#       # Docker image here that supports AWS CLI
-#     steps:
-#       # Checkout code from git
-#       - run:
-#           name: Ensure back-end infrastructure exists
-#           command: |
-#             aws cloudformation deploy \
-#               --template-file .circleci/files/backend.yml \
-#               #--tags project=your-tag \
-#               # --stack-name "your back-end stack name with workflow id" \
-#               # --parameter-overrides ID="your workflow id"  
-#               exit 1
-#       - run:
-#           name: Ensure front-end infrastructure exist
-#           command: |
-#             aws cloudformation deploy \
-#               --template-file .circleci/files/frontend.yml \
-#               #--tags project=your-tag \
-#               # --stack-name "your front-end stack name with workflow id" \
-#               # --parameter-overrides ID="your workflow id"  
-#               exit 1
-#       - run:
-#           name: Add back-end ip to ansible inventory
-#           command: |
-#             # Your code here
-#             exit 1
-#       - persist_to_workspace:
-#           root: ~/
-#           paths:
-#             - project/.circleci/ansible/inventory.txt
-#       # Here's where you will add some code to rollback on failure      
+# deploy the infrastructure####################################################################################
+
+
+  deploy-infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      # Checkout code from git
+      - run:
+          name: Ensure back-end infrastructure exists
+          command: |
+            aws cloudformation deploy --template-file .circleci/files/backend.yml \
+            --stack-name "backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --parameter-overrides ID="backend-${CIRCLE_WORKFLOW_ID:0:7}"
+      - run:
+          name: Ensure front-end infrastructure exist
+          command: |
+            aws cloudformation deploy --template-file .circleci/files/frontend.yml \
+            --stack-name "frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --parameter-overrides ID="frontend-${CIRCLE_WORKFLOW_ID:0:7}"
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            echo "[server]" > inventory
+            aws cloudformation describe-stacks \
+            --stack-name "backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --query "Stacks[0].Outputs[?OutputKey==\`BackendURL\`].OutputValue" \
+            --output text >> inventory
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
+
+            
+      # Here's where you will add some code to rollback on failure      
 
 #   configure-infrastructure:
 #     docker:
