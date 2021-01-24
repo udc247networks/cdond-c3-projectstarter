@@ -77,9 +77,9 @@ jobs:
     steps:
           - checkout
           - restore_cache:
-              key: dependency-cache-{{ checksum "package-lock.json" }}
+              key: dependency-cache-{{ checksum "package.json" }}
           - save_cache:
-              key: dependency-cache-{{ checksum "package-lock.json" }}
+              key: dependency-cache-{{ checksum "package.json" }}
               paths:
                 - ./node_modules
           - run:
