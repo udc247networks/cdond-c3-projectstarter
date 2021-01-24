@@ -46,6 +46,7 @@ jobs:
           command: |
             cd frontend
             npm i
+            npm audit fix
             npm run build
       - save_cache:
           paths: [frontend/node_modules]
@@ -87,7 +88,8 @@ jobs:
               command: |
                 cd frontend
                 npm i
-                npm test 
+                npm audit fix
+                npm test
 
   test-backend:
     docker:
