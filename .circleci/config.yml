@@ -160,6 +160,7 @@ jobs:
     docker:
       - image: amazon/aws-cli
     steps:
+      - checkout
       - run:
           name: Ensure back-end infrastructure exists
           command: aws cloudformation deploy --stack-name backend --template-file .circleci/files/backend.yml
