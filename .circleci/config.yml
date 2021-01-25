@@ -2,6 +2,8 @@ version: 2.1
 
 commands:
   destroy-environment:
+    docker:
+      - image: amazon/aws-cli
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
       frontend:
@@ -17,7 +19,7 @@ commands:
           command: |
             aws cloudformation delete-stack --stack-name << parameters.backend >>
             aws cloudformation delete-stack --stack-name << parameters.frontend >>
-            
+
 
 #   revert-migrations:
 #     description: Revert the last migration if successfully run in the current workflow.
