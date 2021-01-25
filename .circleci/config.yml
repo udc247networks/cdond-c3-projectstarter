@@ -183,7 +183,7 @@ jobs:
               --template-file .circleci/files/frontend.yml \
               --tags project=udapeople \
               --stack-name "frontend-${CIRCLE_WORKFLOW_ID:0:8}" \
-              --parameter-overrides ID="frontend-${CIRCLE_WORKFLOW_ID:0:8}"  
+              --parameter-overrides ID="frontend-${CIRCLE_WORKFLW_ID:0:8}"  
       - run:
           name: Add backend ip to ansible inventory
           working_directory: ./.circleci/ansible
