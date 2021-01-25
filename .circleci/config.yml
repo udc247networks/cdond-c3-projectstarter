@@ -17,6 +17,7 @@ commands:
           command: |
             aws cloudformation delete-stack --stack-name << parameters.backend >>
             aws cloudformation delete-stack --stack-name << parameters.frontend >>
+            
 
 #   revert-migrations:
 #     description: Revert the last migration if successfully run in the current workflow.
