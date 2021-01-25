@@ -163,7 +163,7 @@ jobs:
     - checkout
     - run:
         name: cloudformation build via AWS CLI
-        command: aws cloudformation deploy --stack-name backend --template-file .circleci/files/backend.yml
+        command: aws cloudformation deploy --stack-name "backend-${CIRCLE_WORKFLOW_ID:0:7}" --template-file .circleci/files/backend.yml --parameter-overrides ID="backend-${CIRCLE_WORKFLOW_ID:0:7}"
       # - run:
       #     name: Ensure front-end infrastructure exist
       #     command: |
