@@ -156,14 +156,14 @@ jobs:
 # deploy the infrastructure####################################################################################
 
 
-  deploy-infrastructure:
+  Deploy_Infrastructure:
     docker:
       - image: amazon/aws-cli
     steps:
-      - checkout
-      - run:
-          name: Ensure back-end infrastructure exists
-          command: aws cloudformation deploy --stack-name backend --template-file .circleci/files/backend.yml
+    - checkout
+    - run:
+        name: cloudformation build via AWS CLI
+        command: aws cloudformation deploy --stack-name backend --template-file .circleci/files/backend.yml
       # - run:
       #     name: Ensure front-end infrastructure exist
       #     command: |
@@ -331,7 +331,7 @@ workflows:
       #     requires: [build-backend]
       # - scan-frontend:
       #     requires: [build-frontend]
-      - deploy-infrastructure
+      - Deploy_Infrastructure
           # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           # filters:
           #   branches:
