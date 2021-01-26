@@ -1,0 +1,19 @@
+- name: Creates directory
+  file:
+    path: ~/web
+    state: directory
+- name: get backend
+  become: yes
+  copy:
+    src: ../../../../dist/backend.tar.gz
+    dest: web
+- name: Unarchive backend
+  become: yes
+  shell: |
+    cd /home/ubuntu/web
+    tar -xvzf backend.tar.gz
+- name: start 
+  become: yes
+  shell: |    
+    cd /home/ubuntu/web
+    pm2 start npm --no-automation --name "backend" -- run start
