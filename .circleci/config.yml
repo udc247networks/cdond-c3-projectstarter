@@ -206,7 +206,7 @@ jobs:
               pip install awscli 
               ansible --version
               aws --version
-              aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress" --output text
+              aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress" --output text >> inventory.txt
             
       - run:
           name: Configure server
