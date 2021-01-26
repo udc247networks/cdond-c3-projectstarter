@@ -202,7 +202,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            pip install awscli \
+            aws --version \
             ansible --version
       # - run:
       #     name: Configure server
