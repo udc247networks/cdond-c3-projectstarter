@@ -207,14 +207,10 @@ jobs:
               ansible --version
               aws --version
             
-      # - run:
-      #     name: Configure server
-      #     working_directory: ./.circleci/ansible
-      #     command: |
-      #       pwd &&
-      #       ls -la
-      #       cat inventory
-      #       ansible-playbook -i inventory.txt configure-server.yaml
+      - run:
+          name: Configure server
+          working_directory: ./.circleci/ansible
+          command:  ansible-playbook -i inventory.txt configure-server.yaml
       # - destroy_environment:
       #     id: ${CIRCLE_WORKFLOW_ID:0:8}
       #     when: on_fail
