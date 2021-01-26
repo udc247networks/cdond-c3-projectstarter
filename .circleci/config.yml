@@ -182,13 +182,13 @@ jobs:
           name: Add backend ip to ansible inventory
           working_directory: ./.circleci/ansible
           command: |
-            aws ec2 describe-instances --filters Name=instance-state-name,Values=running --query "Reservations[*].Instances[*].PublicIpAddress" --output text >> inventory
-            cat inventory
+            aws ec2 describe-instances --filters Name=instance-state-name,Values=running --query "Reservations[*].Instances[*].PublicIpAddress" --output text >> inventory.txt
+            cat inventory.txt
             
       - persist_to_workspace:
           root: .
           paths:
-            - .circleci/ansible/inventory
+            - .circleci/ansible/inventory.txt
       - destroy-environment
 
 
@@ -213,7 +213,7 @@ jobs:
       - run:
           name: Configure server
           working_directory: ./.circleci/ansible
-          command:  ansible-playbook -i inventory configure-server.yml
+          command:  ansible-playbook -i inventory.txt configure-server.yml
       # - destroy_environment:
       #     id: ${CIRCLE_WORKFLOW_ID:0:8}
       #     when: on_fail
