@@ -168,7 +168,7 @@ jobs:
               --template-file .circleci/files/backend.yml \
               --tags project=udapeople \
               --stack-name "backend-${CIRCLE_WORKFLOW_ID:0:8}" \
-              --parameter-overrides ID="backend-${CIRCLE_WORKFLOW_ID:0:8}"  
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:8}"  
 
       - run:
           name: Ensure front-end infrastructure exist
@@ -182,9 +182,8 @@ jobs:
           name: Add backend ip to ansible inventory
           working_directory: ./.circleci/ansible
           command: |
-            aws ec2 describe-instances \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:8}" \
-              --output text >> inventory.txt
+            aws ec2 describe-instances aws ec2 describe-instances   --query "Reservations[*].Instances[*].PublicIpAddress" \
+            --output text >> inventory.txt \
             cat inventory.txt
       - persist_to_workspace:
           root: .
@@ -195,7 +194,7 @@ jobs:
 
   configure-infrastructure:
     docker:
-    - image: circleci/python:3.9.1
+    - image: python:3.7-alpine3.11
     steps:
       - checkout
       - add_ssh_keys:
