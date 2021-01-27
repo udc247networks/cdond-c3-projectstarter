@@ -210,7 +210,7 @@ jobs:
               ansible --version
               aws --version
             
-            - run:
+      - run:
           name: Configure server
           working_directory: ./.circleci/ansible
           command:  ansible-playbook -i ./.circleci/ansible/inventory.txt ./.circleci/ansible/configure-server.yml
