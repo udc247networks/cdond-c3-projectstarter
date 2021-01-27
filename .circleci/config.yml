@@ -160,30 +160,30 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run:
-          name: install tar
-          command: yum -y install tar gzip
+      - run: yum -y install tar gzip
       - run:
           name: Ensure back-end infrastructure exists
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
-              --stack-name "udapeople-backendStack-${CIRCLE_WORKFLOW_ID:0:8}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:8}"\
-              --tags project="udapeopleBackend_${CIRCLE_WORKFLOW_ID:0:8}"
+              --tags project=udapeople \
+              --stack-name "backend-${CIRCLE_WORKFLOW_ID:0:8}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:8}"  
       - run:
-          name: Add back-end ip to ansible inventory & generate memstash links
+          name: Add backend ip to ansible inventory
+          working_directory: ./.circleci/ansible
           command: |
-            cwid=$(echo "aws ec2 describe-instances --filters 'Name=tag:project,Values=udapeopleBackend_${CIRCLE_WORKFLOW_ID:0:8}' --query 'Reservations[*].Instances[*].PublicIpAddress' --output text")
-            echo $cwid > backip.sh; chmod 755 backip.sh
-            ./backip.sh >> .circleci/ansible/inventory.txt
-            backendip=$(./backip.sh)
-            curl -H "Content-Type: text/plain" -H "token: bc0ecb36-991a-4dc2-a4a3-5fc4ea7814bd" --request PUT --data "$backendip" https://api.memstash.io/values/ec2_back_ip_${CIRCLE_WORKFLOW_ID}
-            cwid2=$(echo "aws ec2 describe-instances --filters 'Name=tag:project,Values="udapeopleBackend_${CIRCLE_WORKFLOW_ID:0:8}"' --query 'Reservations[*].Instances[*].PublicDnsName' --output text")
-            echo $cwid2 > backurl.sh; chmod 755 backurl.sh
-            backendurl=$(./backurl.sh)
-            curl -H "Content-Type: text/plain" -H "token: bc0ecb36-991a-4dc2-a4a3-5fc4ea7814bd" --request PUT --data "$backendurl" https://api.memstash.io/values/ec2_back_url_${CIRCLE_WORKFLOW_ID}
+            aws ec2 describe-instances --filters Name=instance-state-name,Values=running --query "Reservations[*].Instances[*].PublicIpAddress" --output text >> inventory.txt
+            cat inventory.txt
 
+      # - run:
+      #     name: Ensure front-end infrastructure exist
+      #     command: |
+      #       aws cloudformation deploy \
+      #         --template-file .circleci/files/frontend.yml \
+      #         --tags project=udapeople \
+      #         --stack-name "frontend-${CIRCLE_WORKFLOW_ID:0:8}" \
+      #         --parameter-overrides ID="frontend-${CIRCLE_WORKFLOW_ID:0:8}"  
 
       # - run:
       #     name: Ensure front-end infrastructure exist
@@ -208,17 +208,18 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - 9e:a8:42:7b:87:90:8f:17:5b:98:80:0c:3e:19:eb:e6
+            - d1:1d:fe:4c:a7:92:72:1f:97:5f:8b:b0:07:db:f9:09
       - attach_workspace:
-          at: /tmp
+          at: .circleci/ansible/
       - run:
           name: Install dependencies
           command: |
             apk add --update ansible
+            pip install awscli
       - run:
           name: Configure server
           command: |
-            ansible-playbook -i tmp/ansible/inventory.txt .circleci/ansible/configure-server.yml
+            ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
       # Here's where you will add some code to rollback on failure       
       #- destroy-environment
       # - destroy_environment:
