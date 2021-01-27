@@ -199,7 +199,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "b7:35:a6:4e:9b:0d:6d:d4:78:1e:9a:97:2a:66:6b:be"
+            - "d1:1d:fe:4c:a7:92:72:1f:97:5f:8b:b0:07:db:f9:09"
       - attach_workspace:
           at: .circleci/ansible/
       - run:
