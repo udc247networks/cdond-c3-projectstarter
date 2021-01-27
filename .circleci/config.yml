@@ -171,10 +171,9 @@ jobs:
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:8}"  
       - run:
           name: Add backend ip to ansible inventory
-          working_directory: ./.circleci/ansible
           command: |
-            aws ec2 describe-instances --filters Name=instance-state-name,Values=running --query "Reservations[*].Instances[*].PublicIpAddress" --output text >> inventory.txt
-            cat inventory.txt
+            aws ec2 describe-instances --filters Name=instance-state-name,Values=running --query "Reservations[*].Instances[*].PublicIpAddress" --output text >> ./.circleci/ansible/inventory.txt
+            cat ./.circleci/ansible/inventory.txt
 
       # - run:
       #     name: Ensure front-end infrastructure exist
@@ -219,7 +218,7 @@ jobs:
       - run:
           name: Configure server
           command: |
-            ansible-playbook -i inventory.txt .circleci/ansible/configure-server.yml
+            ansible-playbook -i ./.circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
       # Here's where you will add some code to rollback on failure       
       #- destroy-environment
       # - destroy_environment:
