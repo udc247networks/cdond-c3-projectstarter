@@ -219,7 +219,7 @@ jobs:
       - run:
           name: Configure server
           working_directory: ./.circleci/ansible
-          command:  ansible-playbook -i ./.circleci/ansible/inventory.txt configure-server.yml
+          command:  ansible-playbook  configure-server.yml
       # - destroy_environment:
       #     id: ${CIRCLE_WORKFLOW_ID:0:8}
       #     when: on_fail
