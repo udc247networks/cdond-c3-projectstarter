@@ -176,14 +176,14 @@ jobs:
             aws ec2 describe-instances --filters Name=instance-state-name,Values=running --query "Reservations[*].Instances[*].PublicIpAddress" --output text >> inventory.txt
             cat inventory.txt
 
-      - run:
-          name: Ensure front-end infrastructure exist
-          command: |
-            aws cloudformation deploy \
-              --template-file .circleci/files/frontend.yml \
-              --tags project=udapeople \
-              --stack-name "frontend-${CIRCLE_WORKFLOW_ID:0:8}" \
-              --parameter-overrides ID="frontend-${CIRCLE_WORKFLOW_ID:0:8}"  
+      # - run:
+      #     name: Ensure front-end infrastructure exist
+      #     command: |
+      #       aws cloudformation deploy \
+      #         --template-file .circleci/files/frontend.yml \
+      #         --tags project=udapeople \
+      #         --stack-name "frontend-${CIRCLE_WORKFLOW_ID:0:8}" \
+      #         --parameter-overrides ID="frontend-${CIRCLE_WORKFLOW_ID:0:8}"  
 
             
       - persist_to_workspace:
