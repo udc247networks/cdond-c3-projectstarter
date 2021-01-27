@@ -169,17 +169,17 @@ jobs:
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
               --stack-name "udapeople-backendStack-${CIRCLE_WORKFLOW_ID:0:8}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"\
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:8}"\
               --tags project="udapeopleBackend_${CIRCLE_WORKFLOW_ID:0:8}"
       - run:
           name: Add back-end ip to ansible inventory & generate memstash links
           command: |
-            cwid=$(echo "aws ec2 describe-instances --filters 'Name=tag:project,Values=udapeopleBackend_${CIRCLE_WORKFLOW_ID:0:7}' --query 'Reservations[*].Instances[*].PublicIpAddress' --output text")
+            cwid=$(echo "aws ec2 describe-instances --filters 'Name=tag:project,Values=udapeopleBackend_${CIRCLE_WORKFLOW_ID:0:8}' --query 'Reservations[*].Instances[*].PublicIpAddress' --output text")
             echo $cwid > backip.sh; chmod 755 backip.sh
             ./backip.sh >> .circleci/ansible/inventory.txt
             backendip=$(./backip.sh)
             curl -H "Content-Type: text/plain" -H "token: bc0ecb36-991a-4dc2-a4a3-5fc4ea7814bd" --request PUT --data "$backendip" https://api.memstash.io/values/ec2_back_ip_${CIRCLE_WORKFLOW_ID}
-            cwid2=$(echo "aws ec2 describe-instances --filters 'Name=tag:project,Values="udapeopleBackend_${CIRCLE_WORKFLOW_ID:0:7}"' --query 'Reservations[*].Instances[*].PublicDnsName' --output text")
+            cwid2=$(echo "aws ec2 describe-instances --filters 'Name=tag:project,Values="udapeopleBackend_${CIRCLE_WORKFLOW_ID:0:8}"' --query 'Reservations[*].Instances[*].PublicDnsName' --output text")
             echo $cwid2 > backurl.sh; chmod 755 backurl.sh
             backendurl=$(./backurl.sh)
             curl -H "Content-Type: text/plain" -H "token: bc0ecb36-991a-4dc2-a4a3-5fc4ea7814bd" --request PUT --data "$backendurl" https://api.memstash.io/values/ec2_back_url_${CIRCLE_WORKFLOW_ID}
