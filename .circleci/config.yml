@@ -160,21 +160,30 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run: yum -y install tar gzip
+      - run:
+          name: install tar
+          command: yum -y install tar gzip
       - run:
           name: Ensure back-end infrastructure exists
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
-              --tags project=udapeople \
-              --stack-name "backend-${CIRCLE_WORKFLOW_ID:0:8}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:8}"  
+              --stack-name "udapeople-backendStack-${CIRCLE_WORKFLOW_ID:0:8}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"\
+              --tags project="udapeopleBackend_${CIRCLE_WORKFLOW_ID:0:8}"
       - run:
-          name: Add backend ip to ansible inventory
-          working_directory: ./.circleci/ansible
+          name: Add back-end ip to ansible inventory & generate memstash links
           command: |
-            aws ec2 describe-instances --filters Name=instance-state-name,Values=running --query "Reservations[*].Instances[*].PublicIpAddress" --output text >> inventory.txt
-            cat inventory.txt
+            cwid=$(echo "aws ec2 describe-instances --filters 'Name=tag:project,Values=udapeopleBackend_${CIRCLE_WORKFLOW_ID:0:7}' --query 'Reservations[*].Instances[*].PublicIpAddress' --output text")
+            echo $cwid > backip.sh; chmod 755 backip.sh
+            ./backip.sh >> .circleci/ansible/inventory.txt
+            backendip=$(./backip.sh)
+            curl -H "Content-Type: text/plain" -H "token: bc0ecb36-991a-4dc2-a4a3-5fc4ea7814bd" --request PUT --data "$backendip" https://api.memstash.io/values/ec2_back_ip_${CIRCLE_WORKFLOW_ID}
+            cwid2=$(echo "aws ec2 describe-instances --filters 'Name=tag:project,Values="udapeopleBackend_${CIRCLE_WORKFLOW_ID:0:7}"' --query 'Reservations[*].Instances[*].PublicDnsName' --output text")
+            echo $cwid2 > backurl.sh; chmod 755 backurl.sh
+            backendurl=$(./backurl.sh)
+            curl -H "Content-Type: text/plain" -H "token: bc0ecb36-991a-4dc2-a4a3-5fc4ea7814bd" --request PUT --data "$backendurl" https://api.memstash.io/values/ec2_back_url_${CIRCLE_WORKFLOW_ID}
+
 
       # - run:
       #     name: Ensure front-end infrastructure exist
@@ -187,33 +196,31 @@ jobs:
 
             
       - persist_to_workspace:
-          root: .
+          root: .circleci
           paths:
-            - .circleci/ansible/inventory.txt
+            - ansible/inventory.txt  
       - destroy-environment
-
 
   configure-infrastructure:
     docker:
-    - image: python:3.7-alpine3.11
+      - image: python:3.7-alpine3.12 
     steps:
+      - checkout
       - add_ssh_keys:
           fingerprints:
-            - "d1:1d:fe:4c:a7:92:72:1f:97:5f:8b:b0:07:db:f9:09"
+            - 9e:a8:42:7b:87:90:8f:17:5b:98:80:0c:3e:19:eb:e6
       - attach_workspace:
-          at: .circleci/ansible/
+          at: /tmp
       - run:
           name: Install dependencies
           command: |
-              apk add --update ansible
-              pip install awscli 
-              ansible --version
-              aws --version
-            
+            apk add --update ansible
       - run:
           name: Configure server
-          working_directory: ./.circleci/ansible
-          command:  ansible-playbook -i ./.circleci/ansible/inventory.txt configure-server.yml
+          command: |
+            ansible-playbook -i /tmp/ansible/inventory.txt .circleci/ansible/configure-server.yml
+      # Here's where you will add some code to rollback on failure       
+      #- destroy-environment
       # - destroy_environment:
       #     id: ${CIRCLE_WORKFLOW_ID:0:8}
       #     when: on_fail
