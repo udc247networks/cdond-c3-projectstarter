@@ -374,18 +374,18 @@ jobs:
 
 
 
-  cleanup:
-      docker:
-        - image: amazon/aws-cli
-      steps:
-        - checkout
-        # Created script as Circle Ci doesn't like pipes
-        - run:
-            name: Remove old stacks and files
-            command: |
-              sleep 240
-              chmod 755 Cleanup.sh
-              ./Cleanup.sh
+  # cleanup:
+  #     docker:
+  #       - image: amazon/aws-cli
+  #     steps:
+  #       - checkout
+  #       # Created script as Circle Ci doesn't like pipes
+  #       - run:
+  #           name: Remove old stacks and files
+  #           command: |
+  #             sleep 240
+  #             chmod 755 Cleanup.sh
+  #             ./Cleanup.sh
             
 
 workflows:
@@ -393,20 +393,20 @@ workflows:
     jobs:
       - build-frontend
       - build-backend
-      - test-frontend:
-            requires: [build-frontend]
-      - test-backend:
-            requires: [build-backend]
-      - scan-frontend:
-            requires: [test-frontend]
-      - scan-backend:
-            requires: [test-backend]
-      - deploy-infrastructure:
-            requires: [scan-frontend, scan-backend]
-            filters:
-                branches:
-                  only:
-                    - master
+      # - test-frontend:
+      #       requires: [build-frontend]
+      # - test-backend:
+      #       requires: [build-backend]
+      # - scan-frontend:
+      #       requires: [test-frontend]
+      # - scan-backend:
+      #       requires: [test-backend]
+      - deploy-infrastructure
+            # requires: [scan-frontend, scan-backend]
+            # filters:
+            #     branches:
+            #       only:
+            #         - master
       - configure-infrastructure:
             requires: [deploy-infrastructure]
       - run-migrations:
@@ -419,5 +419,5 @@ workflows:
             requires: [deploy-backend]
       - cloudfront-update:
             requires: [smoke-test]
-      - cleanup:
-              requires: [cloudfront-update]
+      # - cleanup:
+      #         requires: [cloudfront-update]
