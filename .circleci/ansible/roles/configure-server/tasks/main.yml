@@ -1,9 +1,11 @@
 ---
   - hosts: all
-    sudo: yes
+    become: yes
     tasks:
     - name: Updates apt cache
       action: apt update_cache=true
+
+      #  https://docs.ansible.com/ansible/latest/user_guide/become.html
 
   - name: "update apt packages."
     apt:
