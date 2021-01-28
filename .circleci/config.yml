@@ -174,7 +174,7 @@ jobs:
           command: |
             aws ec2 describe-instances --filters Name=instance-state-name,Values=running --query "Reservations[*].Instances[*].PublicIpAddress" --output text >> ./.circleci/ansible/inventory.txt
             cat ./.circleci/ansible/inventory.txt
-            ls .circle/ansible
+            ls 
 
       # - run:
       #     name: Ensure front-end infrastructure exist
