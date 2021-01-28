@@ -4,10 +4,10 @@
   apt:
     update_cache: yes
 
-- name: "Install NodeJS and NPM and pm2"
+- name: "Install NodeJS and NPM "
   become: yes
   apt:
-    name: ['nodejs', 'npm', 'pm2']
+    name: ['nodejs', 'npm']
     state: latest
     update_cache: yes
 
@@ -15,3 +15,7 @@
   become: yes
   apt:
     upgrade: "yes"
+
+- npm:
+  name: pm2
+  global: yes
