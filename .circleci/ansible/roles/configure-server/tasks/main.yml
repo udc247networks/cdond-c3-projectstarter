@@ -1,33 +1,12 @@
 ---
-  - hosts: all
-    become: yes
-    tasks:
-    - name: Updates apt cache
-      action: apt update_cache=true
+- name: "Update Packages"
+  become: yes
+  apt:
+    update_cache: yes
 
-      #  https://docs.ansible.com/ansible/latest/user_guide/become.html
-
-  - name: "update apt packages."
-    apt:
-      update_cache: yes
-
-  - name: "upgrade packages"
-    apt:
-      upgrade: "yes"
-
-  - name: remove dependencies 
-    apt:
-      autoremove: yes
-
-  - name: "install dependencies."
-    apt:
-      name: ["nodejs", "npm"]
-      state: latest
-      update_cache: yes
-
-  - name: "install pm2"
-    npm:
-      name: pm2
-      global: yes
-      production: yes
-      state: present
+- name: "Install NodeJS and NPM"
+  become: yes
+  apt:
+    name: ['nodejs', 'npm']
+    state: latest
+    update_cache: yes
