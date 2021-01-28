@@ -35,122 +35,122 @@ jobs:
 
 # building front and backend##########################################################################
 
-  build-frontend:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - restore_cache:
-          keys: 
-          - frontend-build-{{ checksum "package-lock.json" }}
-      - run:
-          name: Build front-end
-          command: |
-            cd frontend
-            npm i
-            npm run build
-      - save_cache:
-          paths: [frontend/node_modules]
-          key: frontend-build-{{ checksum "package-lock.json" }}
+  # build-frontend:
+  #   docker:
+  #     - image: circleci/node:13.8.0
+  #   steps:
+  #     - checkout
+  #     - restore_cache:
+  #         keys: 
+  #         - frontend-build-{{ checksum "package-lock.json" }}
+  #     - run:
+  #         name: Build front-end
+  #         command: |
+  #           cd frontend
+  #           npm i
+  #           npm run build
+  #     - save_cache:
+  #         paths: [frontend/node_modules]
+  #         key: frontend-build-{{ checksum "package-lock.json" }}
 
 
 
-  build-backend:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - restore_cache:
-          keys: 
-            - backend-build-{{ checksum "package-lock.json" }}
-      - run:
-          name: Back-end build
-          command: |
-            cd backend
-            npm i
-            npm run build
-      - save_cache:
-          paths: [backend/node_modules]
-          key: backend-build-{{ checksum "package-lock.json" }}
+  # build-backend:
+  #   docker:
+  #     - image: circleci/node:13.8.0
+  #   steps:
+  #     - checkout
+  #     - restore_cache:
+  #         keys: 
+  #           - backend-build-{{ checksum "package-lock.json" }}
+  #     - run:
+  #         name: Back-end build
+  #         command: |
+  #           cd backend
+  #           npm i
+  #           npm run build
+  #     - save_cache:
+  #         paths: [backend/node_modules]
+  #         key: backend-build-{{ checksum "package-lock.json" }}
 
 
 # # testing front and backend#####################################################################################
 
-  test-frontend:
-    docker:
-        - image: circleci/node:13.8.0
-    steps:
-          - checkout
-          - restore_cache:
-              key: dependency-cache-{{ checksum "package-lock.json" }}
-          - save_cache:
-              key: dependency-cache-{{ checksum "package-lock.json" }}
-              paths:
-                - ./node_modules
-          - run:
-              name: test
-              command: |
-                cd frontend
-                npm i
-                npm test
+  # test-frontend:
+  #   docker:
+  #       - image: circleci/node:13.8.0
+  #   steps:
+  #         - checkout
+  #         - restore_cache:
+  #             key: dependency-cache-{{ checksum "package-lock.json" }}
+  #         - save_cache:
+  #             key: dependency-cache-{{ checksum "package-lock.json" }}
+  #             paths:
+  #               - ./node_modules
+  #         - run:
+  #             name: test
+  #             command: |
+  #               cd frontend
+  #               npm i
+  #               npm test
 
-  test-backend:
-    docker:
-        - image: circleci/node:13.8.0
-    steps:
-          - checkout
-          - restore_cache:
-              key: dependency-cache-{{ checksum "package-lock.json" }}
-          - save_cache:
-              key: dependency-cache-{{ checksum "package-lock.json" }}
-              paths:
-                - ./node_modules
-          - run:
-              name: test
-              command: |
-                cd backend
-                npm i
-                npm test
+  # test-backend:
+  #   docker:
+  #       - image: circleci/node:13.8.0
+  #   steps:
+  #         - checkout
+  #         - restore_cache:
+  #             key: dependency-cache-{{ checksum "package-lock.json" }}
+  #         - save_cache:
+  #             key: dependency-cache-{{ checksum "package-lock.json" }}
+  #             paths:
+  #               - ./node_modules
+  #         - run:
+  #             name: test
+  #             command: |
+  #               cd backend
+  #               npm i
+  #               npm test
             
 
 
 # # scanning front and backend##################################################################################
 
-  scan-frontend:
-    docker:
-        - image: circleci/node:13.8.0
-    steps:
-          - checkout
-          - restore_cache:
-              key: dependency-cache-{{ checksum "package-lock.json" }}
-          - save_cache:
-              key: dependency-cache-{{ checksum "package-lock.json" }}
-              paths:
-                - ./node_modules
-          - run:
-              name: audit
-              command: |
-                cd frontend
-                npm i
-                npm audit --audit-level=critical
+  # scan-frontend:
+  #   docker:
+  #       - image: circleci/node:13.8.0
+  #   steps:
+  #         - checkout
+  #         - restore_cache:
+  #             key: dependency-cache-{{ checksum "package-lock.json" }}
+  #         - save_cache:
+  #             key: dependency-cache-{{ checksum "package-lock.json" }}
+  #             paths:
+  #               - ./node_modules
+  #         - run:
+  #             name: audit
+  #             command: |
+  #               cd frontend
+  #               npm i
+  #               npm audit --audit-level=critical
 
-  scan-backend:
-    docker:
-        - image: circleci/node:13.8.0
-    steps:
-          - checkout
-          - restore_cache:
-              key: dependency-cache-{{ checksum "package-lock.json" }}
-          - save_cache:
-              key: dependency-cache-{{ checksum "package-lock.json" }}
-              paths:
-                - ./node_modules
-          - run:
-              name: audit
-              command: |
-                cd backend
-                npm i
-                npm audit fix --audit-level=critical
+  # scan-backend:
+  #   docker:
+  #       - image: circleci/node:13.8.0
+  #   steps:
+  #         - checkout
+  #         - restore_cache:
+  #             key: dependency-cache-{{ checksum "package-lock.json" }}
+  #         - save_cache:
+  #             key: dependency-cache-{{ checksum "package-lock.json" }}
+  #             paths:
+  #               - ./node_modules
+  #         - run:
+  #             name: audit
+  #             command: |
+  #               cd backend
+  #               npm i
+  #               npm audit fix --audit-level=critical
 
 # deploy the infrastructure####################################################################################
 
@@ -228,22 +228,23 @@ jobs:
 
       # Here's where you will add some code to rollback on failure      
 
-#   run-migrations:
-#     docker:
-#       # Docker image here that supports NodeJS
-#     steps:
-#       # Checkout code from git
-#       - run:
-#           name: Run migrations
-#           command: |
-#             # Your code here
-#             exit 1
-#       - run:
-#           name: Send migration results to memstash
-#           command: |
-#             # Your code here
-#             exit 1
-#      # Here's where you will add some code to rollback on failure      
+  run-migrations:
+      docker:
+        - image: circleci/node:13.8.0
+      steps:
+        - checkout
+        - run:
+            name: Run migrations
+            command: |
+              cd backend
+              npm i 
+              npm run migration
+        # - run:
+        #     name: Send migration results to memstash
+        #     command: |
+        #       # Your code here
+        #       exit 1
+      # Here's where you will add some code to rollback on failure      
 
 #   deploy-frontend:
 #     docker:
