@@ -217,7 +217,7 @@ jobs:
             apk add --update ansible
             pip install awscli
             cat ./.circleci/ansible/inventory.txt
-            ls ./.circle/ansible
+            ls .circle/ansible
       - run:
           name: Configure server
           command: |
