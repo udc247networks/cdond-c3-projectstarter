@@ -210,13 +210,13 @@ jobs:
           fingerprints:
             - d1:1d:fe:4c:a7:92:72:1f:97:5f:8b:b0:07:db:f9:09
       - attach_workspace:
-          at: .circleci/ansible/
+          at: .
       - run:
           name: Install dependencies
           command: |
             apk add --update ansible
             pip install awscli
-            cat /inv1/inventory.txt
+            ls
             
       - run:
           name: Configure server
