@@ -176,23 +176,16 @@ jobs:
             cat inv1/inventory.txt
             ls 
 
-      - run:
-          name: Ensure front-end infrastructure exist
-          command: |
-            aws cloudformation deploy \
-              --template-file .circleci/files/frontend.yml \
-              --tags project=udapeople \
-              --stack-name "frontend-${CIRCLE_WORKFLOW_ID:0:8}" \
-              --parameter-overrides ID="frontend-${CIRCLE_WORKFLOW_ID:0:8}"  
+      # - run:
+      #     name: Ensure front-end infrastructure exist
+      #     command: |
+      #       aws cloudformation deploy \
+      #         --template-file .circleci/files/frontend.yml \
+      #         --tags project=udapeople \
+      #         --stack-name "frontend-${CIRCLE_WORKFLOW_ID:0:8}" \
+      #         --parameter-overrides ID="frontend-${CIRCLE_WORKFLOW_ID:0:8}"  
 
-      - run:
-          name: Ensure front-end infrastructure exist
-          command: |
-            aws cloudformation deploy \
-              --template-file .circleci/files/frontend.yml \
-              --tags project=udapeople \
-              --stack-name "frontend-${CIRCLE_WORKFLOW_ID:0:8}" \
-              --parameter-overrides ID="frontend-${CIRCLE_WORKFLOW_ID:0:8}"  
+
 
             
       - persist_to_workspace:
