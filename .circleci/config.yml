@@ -293,7 +293,7 @@ jobs:
             echo ENVIROMENT=production > $myenv
             echo TYPEORM_CONNECTION=postgres >> $myenv
             echo TYPEORM_MIGRATIONS_DIR=./src/migrations >> $myenv
-            echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts >> $myenv
+            echo TYPEORM_ENTITIES=./src/modules/**/*.entity.ts >> $myenv
             echo TYPEORM_MIGRATIONS=./src/migrations/*.ts >> $myenv
             echo TYPEORM_HOST=$TYPEORM_HOST >> $myenv
             echo TYPEORM_PORT=$TYPEORM_PORT >> $myenv
